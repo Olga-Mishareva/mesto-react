@@ -1,9 +1,12 @@
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Main from './Main';
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import { useState } from "react";
+import api from '../utils/api';
+import { profileData, settings, formValidators, profileBtn, 
+  avatarEditBtn, inputName, inputInfo, placeBtn } from "../utils/constants.js";
 
 function App() {
 
@@ -11,6 +14,10 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   
+  // function log() {
+  //   console.log(isEditAvatarPopupOpen) // true
+  // }
+  // log()  // false
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -24,29 +31,38 @@ function App() {
   setIsAddPlacePopupOpen(true);
   }
 
-  function handleEscClick(e) {
-    if(e.key === 'Escape') {
-      setIsEditAvatarPopupOpen(false);
-      setIsEditProfilePopupOpen(false);
-      setIsAddPlacePopupOpen(false);
-    }
-  }
-
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
   }
 
-  // function log() {
-  //   console.log(isEditAvatarPopupOpen) // true
-  // }
-  // log()  // false
+  useEffect(() => {
+    function handleEscClick(e) {
+      if(e.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+
+    if(isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen) {
+      document.addEventListener('keydown', handleEscClick);
+      // console.log('EL ist added')
+      return () => {
+        // console.log('EL ist deleted')
+        document.removeEventListener('keydown', handleEscClick);
+      }
+    }
+  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen]) 
+
+// -----------------------------------------------------------
+
+
+
 
 
 // сменить form.id & button.form на name
   return (
-    <div className="page" onKeyDown={handleEscClick}>
+    <div className="page">
       <Header />
 
       <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} 
