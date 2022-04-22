@@ -7,8 +7,8 @@ function PopupWithForm({ title, name, isOpen, onClose, children}) {
   // log()
 
   return (
-    <div className={`popup popup_type_${name} ${isOpen}`} >
-      <div className={`popup__container popup__container_type_${name}`}>
+    <div className={`popup popup_type_${name} ${isOpen}`} onClick={onClose}>
+      <div className={`popup__container popup__container_type_${name}`} onClick={(e) => e.stopPropagation()}>
         <button className="popup__close-button" type="button" onClick={onClose}></button>
         <form className="popup__form" noValidate name={name} action="#" method="post" id={name}>
           <h2 className={`popup__title popup__title_type_${name}`}>{title}</h2>

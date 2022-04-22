@@ -10,22 +10,18 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState('');
   
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
-    
   }
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
-    // setIsOpen('popup_opened');
   }
 
   function handleAddPlaceClick() {
   setIsAddPlacePopupOpen(true);
- 
   }
 
   function handleEscClick(e) {
@@ -43,7 +39,7 @@ function App() {
   }
 
   // function log() {
-  //   console.log(isEditProfilePopupOpen) // true
+  //   console.log(isEditAvatarPopupOpen) // true
   // }
   // log()  // false
 
@@ -54,11 +50,12 @@ function App() {
       <Header />
 
       <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} 
-      onAddPlace={handleAddPlaceClick} onClose={closeAllPopups} isOpen={isOpen}/>
+      onAddPlace={handleAddPlaceClick}/>
 
       <Footer />
 
-      <PopupWithForm title="Обновить аватар" name="edit-avatar" isOpen={isEditAvatarPopupOpen ? 'popup_opened' : ''} onClose={closeAllPopups}> 
+      <PopupWithForm title="Обновить аватар" name="edit-avatar" isOpen={isEditAvatarPopupOpen ? 'popup_opened' : ''} 
+        onClose={closeAllPopups}> 
         <input className="popup__input popup__input_type_link" type="url" required name="avatar"
           placeholder="Ссылка на картинку"/>
         <span className="popup__error popup__error_type_avatar"></span>

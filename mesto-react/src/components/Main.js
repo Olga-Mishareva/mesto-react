@@ -1,6 +1,6 @@
 import PopupWithForm from "./PopupWithForm";
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onClose, isOpen }) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace }) {
 
 
   return (
