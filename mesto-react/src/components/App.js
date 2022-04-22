@@ -1,77 +1,91 @@
 import Header from "./Header";
 import Main from './Main';
 import Footer from "./Footer";
+import PopupWithForm from "./PopupWithForm";
+import ImagePopup from "./ImagePopup";
+import { useState } from "react";
 
 function App() {
-  return (
-    <div className="page">
-      <Header />
-      <Main />
-      <Footer />
+
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState('');
+  
+
+  function handleEditAvatarClick() {
+    setIsEditAvatarPopupOpen(true);
     
-    <div className="popup popup_type_edit-profile">
-      <div className="popup__container">
-        <button className="popup__close-button" type="button"></button>
-        <form className="popup__form" novalidate name="profile-form" action="#" method="post" id="save">
-          <h2 className="popup__title">Редактировать профиль</h2>
-          <input className="popup__input popup__input_type_name" type="text" required minlength="2" maxlength="40"
-            name="username" placeholder="Имя"/>
-          <span className="popup__error popup__error_type_username"></span>
-          <input className="popup__input popup__input_type_info" type="text" required minlength="2"
-            maxlength="200" name="about" placeholder="О себе"/>
-          <span className="popup__error popup__error_type_about"></span>
-          <button className="popup__submit-button" type="submit" form="save">Сохранить</button>
-        </form>
-      </div>
-    </div>
+  }
 
-    <div className="popup popup_type_edit-avatar">
-      <div className="popup__container popup__container_type_edit-avatar">
-        <button className="popup__close-button" type="button"></button>
-        <form className="popup__form" novalidate name="avatar-form" action="#" method="post" id="user-avatar">
-          <h2 className="popup__title">Обновить аватар</h2>
-          <input className="popup__input popup__input_type_link" type="url" required name="avatar"
-            placeholder="Ссылка на картинку"/>
-          <span className="popup__error popup__error_type_avatar"></span>
-          <button className="popup__submit-button" type="submit" form="user-avatar">Сохранить</button>
-        </form>
-      </div>
-    </div>
+  function handleEditProfileClick() {
+    setIsEditProfilePopupOpen(true);
+    // setIsOpen('popup_opened');
+  }
 
-    <div className="popup popup_type_add-place">
-      <div className="popup__container">
-        <button className="popup__close-button" type="button"></button>
-        <form className="popup__form" novalidate name="add-form" action="#" method="post" id="add">
-          <h2 className="popup__title">Новое место</h2>
-          <input className="popup__input popup__input_type_place" type="text" required minlength="2"
-            maxlength="40" name="place" placeholder="Название"/>
-          <span className="popup__error popup__error_type_place"></span>
-          <input className="popup__input popup__input_type_link" type="url" required name="img"
-            placeholder="Ссылка на картинку"/>
-          <span className="popup__error popup__error_type_img"></span>
-          <button className="popup__submit-button popup__submit-button_disabled" type="submit" form="add">Создать</button>
-        </form>
-      </div>
-    </div>
+  function handleAddPlaceClick() {
+  setIsAddPlacePopupOpen(true);
+ 
+  }
 
-    <div className="popup popup_type_delete-place">
-      <div className="popup__container popup__container_type_delete-place">
-        <button className="popup__close-button" type="button"></button>
-        <form className="popup__form" novalidate name="delete-form" action="#" method="post" id="delete">
-          <h2 className="popup__title popup__title_type_delete-place">Вы уверены?</h2>
-          <button className="popup__submit-button" type="submit" form="delete">Да</button>
-        </form>
-      </div>
-    </div>
+  function handleEscClick(e) {
+    if(e.key === 'Escape') {
+      setIsEditAvatarPopupOpen(false);
+      setIsEditProfilePopupOpen(false);
+      setIsAddPlacePopupOpen(false);
+    }
+  }
 
-    <div className="popup popup_type_show-image">
-      <div className="popup__illustration">
-        <button className="popup__close-button popup__close-button_type_show" type="button"></button>
-        <img className="popup__image" src="#" alt=""/>
-        <p className="popup__caption"></p>
-      </div>
-    </div>
+  function closeAllPopups() {
+    setIsEditAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+  }
 
+  // function log() {
+  //   console.log(isEditProfilePopupOpen) // true
+  // }
+  // log()  // false
+
+
+// сменить form.id & button.form на name
+  return (
+    <div className="page" onKeyDown={handleEscClick}>
+      <Header />
+
+      <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} 
+      onAddPlace={handleAddPlaceClick} onClose={closeAllPopups} isOpen={isOpen}/>
+
+      <Footer />
+
+      <PopupWithForm title="Обновить аватар" name="edit-avatar" isOpen={isEditAvatarPopupOpen ? 'popup_opened' : ''} onClose={closeAllPopups}> 
+        <input className="popup__input popup__input_type_link" type="url" required name="avatar"
+          placeholder="Ссылка на картинку"/>
+        <span className="popup__error popup__error_type_avatar"></span>
+      </PopupWithForm>
+      
+      <PopupWithForm title="Редактировать профиль" name="edit-profile" isOpen={isEditProfilePopupOpen ? 'popup_opened' : ''} onClose={closeAllPopups}> 
+        <input className="popup__input popup__input_type_name" type="text" required minLength="2" maxLength="40"
+          name="username" placeholder="Имя"/>
+        <span className="popup__error popup__error_type_username"></span>
+        <input className="popup__input popup__input_type_info" type="text" required minLength="2"
+          maxLength="200" name="about" placeholder="О себе"/>
+        <span className="popup__error popup__error_type_about"></span>
+      </PopupWithForm>
+
+      <PopupWithForm title="Новое место" name="add-place" isOpen={isAddPlacePopupOpen ? 'popup_opened' : ''} onClose={closeAllPopups}> 
+        <input className="popup__input popup__input_type_place" type="text" required minLength="2"
+          maxLength="40" name="place" placeholder="Название"/>
+        <span className="popup__error popup__error_type_place"></span>
+        <input className="popup__input popup__input_type_link" type="url" required name="img"
+          placeholder="Ссылка на картинку"/>
+        <span className="popup__error popup__error_type_img"></span>
+      </PopupWithForm>
+
+      <PopupWithForm title="Вы уверены?" name="delete-place"  onClose={closeAllPopups}></PopupWithForm>
+
+      
+      <ImagePopup />
   </div>
   );
 }
