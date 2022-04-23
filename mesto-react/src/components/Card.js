@@ -1,9 +1,13 @@
-function Card({ card, isVisible }) {
+function Card({ card, isVisible, onCardClick }) {
+
+  function cardClick() {
+    onCardClick(card);
+  }
 
   return (
     <li className="place">
       <button className="place__trash place__trash_type_active" type="button"></button>
-      <img className="place__image" src={card.link} alt={card.name}/>
+      <img className="place__image" src={card.link} alt={card.name} onMouseDown={cardClick}/>
         <div className="place__title-container">
             <h2 className="place__title">{card.name}</h2>
               <div className="place__like-container">
