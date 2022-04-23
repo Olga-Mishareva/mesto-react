@@ -4,9 +4,9 @@ import Card from "./Card";
 
 function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
 
-  const [userName, setUserName] = useState();
-  const [userDescription, setUserDescription] = useState();
-  const [userAvatar, setUserAvatar] = useState();
+  const [userName, setUserName] = useState('');
+  const [userDescription, setUserDescription] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
   const [cards, setCards] = useState([]);
   
 
@@ -32,7 +32,6 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
             ownerId: card.owner._id,
           }
         });
-        // console.log(usersCards)
         setCards(usersCards);
       })
       .catch(err => console.log(err));
