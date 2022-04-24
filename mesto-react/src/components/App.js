@@ -11,7 +11,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
   
 
   function handleEditAvatarClick() {
@@ -30,16 +30,11 @@ function App() {
     setSelectedCard(card);
   }
 
-  // function log() {
-  //   console.log(selectedCard) // true
-  // }
-  // log()  // false
-
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setSelectedCard(false);
+    setSelectedCard(null);
   }
 
   useEffect(() => {
