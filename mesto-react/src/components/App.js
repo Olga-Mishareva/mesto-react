@@ -51,7 +51,6 @@ function App() {
     }
   }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, selectedCard]) 
 
-
   return (
     <div className="page">
       <Header />
