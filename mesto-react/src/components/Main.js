@@ -42,7 +42,7 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
     <main className="content">
       <section className="profile">
         <div className="profile__container">
-        <div className="profile__avatar" style={{ backgroundImage: `url(${userAvatar})` }}>
+        <div className="profile__avatar" style={{ backgroundImage: `url(${userAvatar})`}}>
           <button className="profile__avatar-edit-btn" onMouseDown={onEditAvatar}></button>
         </div>
           <div className="profile__data">
@@ -73,3 +73,4 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
 }
 
 export default Main;
+
