@@ -4,15 +4,11 @@ import api from "../utils/api";
 import Card from "./Card";
 
 function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
-  const user = React.useContext(CurrentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
 
   const [cards, setCards] = useState([]);
 
-  // function log() {
-  //   console.log(user)
-  // }
-  // log()
-  
+  // console.log(currentUser)
 
   useEffect(() => {
     api.getUsersCards()
@@ -36,13 +32,13 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
     <main className="content">
       <section className="profile">
         <div className="profile__container">
-        <div className="profile__avatar" style={{ backgroundImage: `url(${user.userAvatar})`}}>
+        <div className="profile__avatar" style={{ backgroundImage: `url(${currentUser.userAvatar})`}}>
           <button className="profile__avatar-edit-btn" onMouseDown={onEditAvatar}></button>
         </div>
           <div className="profile__data">
             <div className="profile__name-container">
-              <h1 className="profile__name">{user.userName}</h1>
-              <p className="profile__info">{user.userInfo}</p>
+              <h1 className="profile__name">{currentUser.userName}</h1>
+              <p className="profile__info">{currentUser.userInfo}</p>
             </div>
             <button className="profile__edit-button" type="button" onMouseDown={onEditProfile}></button>
           </div>

@@ -38,16 +38,13 @@ function App() {
         setCurrentUser({ ...currentUser, 
           userName: res.name, 
           userInfo: res.about, 
-          userAvatar: res.avatar
+          userAvatar: res.avatar,
+          userId: res._id
         })
       })
       .catch(err => console.log(err));
   }, [])
 
-  // function log() {
-  //   console.log(currentUser)
-  // }
-  // log()
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -57,8 +54,8 @@ function App() {
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
     switchSubmitButtonState(userForm)
-    // setNameInput(userName);
-    // setInfoInput(userDescription);
+    setNameInput(currentUser.userName);
+    setInfoInput(currentUser.userInfo);
   }
 
   function handleAddPlaceClick() {
