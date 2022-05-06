@@ -5,6 +5,8 @@ import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import Validation from "./Validation";
+import api from "../utils/api";
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 
 
@@ -27,7 +29,25 @@ function App() {
   
   const [errorMessage, setErrorMessage] = useState({});
   const [submitState, setSubmitState] = useState(false);
-  
+
+  const [currentUser, setCurrentUser] = useState({});
+
+  useEffect(() => {
+    api.getUserData()
+      .then(res => {
+        setCurrentUser({ ...currentUser, 
+          userName: res.name, 
+          userInfo: res.about, 
+          userAvatar: res.avatar
+        })
+      })
+      .catch(err => console.log(err));
+  }, [])
+
+  // function log() {
+  //   console.log(currentUser)
+  // }
+  // log()
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -125,6 +145,7 @@ function App() {
 
     
   return (
+    <CurrentUserContext.Provider value={currentUser}>   {/* значение, которое передается всем дочерним элементам */}
     <div className="page">
       <Header />
 
@@ -176,6 +197,7 @@ function App() {
         isOpen={selectedCard ? 'popup_opened' : ''}/>
       }
   </div>
+  </CurrentUserContext.Provider>
   );
 }
 
