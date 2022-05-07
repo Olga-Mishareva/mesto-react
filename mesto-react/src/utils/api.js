@@ -86,21 +86,9 @@ class Api {
     });
   }
 
-  likeUsersCard(cardId) {
+  changeLikeCardStatus(cardId, isLiked) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'PUT',
-      headers: {
-        authorization: this._authorization
-      }
-    })
-    .then(res => {
-      return this._getResponseData(res);
-    });
-  }
-
-  dislikeUsersCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'DELETE',
+      method: isLiked ? 'DELETE' : 'PUT',
       headers: {
         authorization: this._authorization
       }
@@ -110,6 +98,8 @@ class Api {
     });
   }
 }
+
+
 
 const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-39',
