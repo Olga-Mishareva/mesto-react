@@ -18,7 +18,9 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const [avatarForm, setAvatarForm] = useState(null);
+  const [loading, setLoading] = useState(false);  // сделать оповещение загрузки
+
+  const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
   const [userForm, setUserForm] = useState(null);
   const [cardForm, setCardForm] = useState(null);
 
@@ -46,6 +48,19 @@ function App() {
       .catch(err => console.log(err));
   }, [])
 
+  function handleUpdateUser(data) {
+    // setLoading(true);                   // сделать оповещение загрузки
+    api.editUserData({ data })
+      .then(res => {
+        setCurrentUser({ ...currentUser,
+          userName: res.name,
+          userInfo: res.about
+        })
+      })
+      .catch(err => console.log(err))
+      // .finally(() => setLoading(false));
+    closeAllPopups();  
+  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -156,7 +171,7 @@ function App() {
       <Footer />
 
       <PopupWithForm 
-        title="Обновить аватар" name="edit-avatar" submitBtn="Сохранить" 
+        title="Обновить аватар" name="edit-avatar" submitBtn={loading ? 'Сохраниение...' : 'Сохранить'} 
         onClose={closeAllPopups} isValid={checkInputValidity} isOpen={isEditAvatarPopupOpen}
         isActive={submitState ? "" : "disabled"}> 
 
@@ -168,7 +183,9 @@ function App() {
       <EditProfilePopup onClose={closeAllPopups} 
         isValid={checkInputValidity} 
         isOpen={isEditProfilePopupOpen}
+        loading={loading}
         errorMessage={errorMessage}
+        onUpdateUser={handleUpdateUser}
         isActive={submitState ? "" : "disabled"} >
       </EditProfilePopup>
       
