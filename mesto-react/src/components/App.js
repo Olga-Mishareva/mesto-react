@@ -6,6 +6,7 @@ import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import Validation from "./Validation";
 import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 import api from "../utils/api";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -18,13 +19,13 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const [loading, setLoading] = useState(false);  // сделать оповещение загрузки
+  const [loading, setLoading] = useState(false);
 
   const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
   const [userForm, setUserForm] = useState(null);
   const [cardForm, setCardForm] = useState(null);
 
-  const [avatarInput, setAvatarInput] = useState(''); 
+  // const [avatarInput, setAvatarInput] = useState(''); 
   // const [nameInput, setNameInput] = useState('');
   // const [infoInput, setInfoInput] = useState('');
   const [titleInput, setTitleInput] = useState('');
@@ -49,7 +50,7 @@ function App() {
   }, [])
 
   function handleUpdateUser(data) {
-    // setLoading(true);                   // сделать оповещение загрузки
+    setLoading(true);                 
     api.editUserData({ data })
       .then(res => {
         setCurrentUser({ ...currentUser,
@@ -58,7 +59,7 @@ function App() {
         })
       })
       .catch(err => console.log(err))
-      // .finally(() => setLoading(false));
+      .finally(() => setLoading(false));
     closeAllPopups();  
   }
 
@@ -93,7 +94,7 @@ function App() {
   }
 
   function cleanAllInputs() {  // передать очистку инпутов в компонент
-    setAvatarInput('');   
+    // setAvatarInput('');   
     // setNameInput('');
     // setInfoInput('');
     setTitleInput('');
@@ -141,9 +142,9 @@ function App() {
   }
 
   // собирают инфо с инпутов
-  function handleAvatarInput(e) {
-    setAvatarInput(e.target.value);
-  }
+  // function handleAvatarInput(e) {
+  //   setAvatarInput(e.target.value);
+  // }
   // function handleNameInput(e) {
   //   setNameInput(e.target.value);
   // }
@@ -170,7 +171,17 @@ function App() {
 
       <Footer />
 
-      <PopupWithForm 
+      <EditAvatarPopup
+      onClose={closeAllPopups} 
+      isOpen={isEditAvatarPopupOpen}
+      errorMessage={errorMessage}
+      onUpdateUser={handleUpdateUser}
+      loading={loading}
+      isValid={checkInputValidity} 
+      isActive={submitState ? "" : "disabled"}>
+      </EditAvatarPopup>
+
+      {/* <PopupWithForm 
         title="Обновить аватар" name="edit-avatar" submitBtn={loading ? 'Сохраниение...' : 'Сохранить'} 
         onClose={closeAllPopups} isValid={checkInputValidity} isOpen={isEditAvatarPopupOpen}
         isActive={submitState ? "" : "disabled"}> 
@@ -178,15 +189,16 @@ function App() {
         <input className="popup__input popup__input_type_avatar" value={avatarInput} type="url" required name="avatar"
           placeholder="Ссылка на картинку" onChange={handleAvatarInput}/>
         <Validation errorMessage={errorMessage} name="avatar"/>
-      </PopupWithForm>
+      </PopupWithForm> */}
 
-      <EditProfilePopup onClose={closeAllPopups} 
-        isValid={checkInputValidity} 
+      <EditProfilePopup 
+        onClose={closeAllPopups} 
         isOpen={isEditProfilePopupOpen}
-        loading={loading}
         errorMessage={errorMessage}
         onUpdateUser={handleUpdateUser}
-        isActive={submitState ? "" : "disabled"} >
+        loading={loading}
+        isValid={checkInputValidity} 
+        isActive={submitState ? "" : "disabled"}>
       </EditProfilePopup>
       
       {/* <PopupWithForm 
