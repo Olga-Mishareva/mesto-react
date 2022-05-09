@@ -63,6 +63,19 @@ function App() {
     closeAllPopups();  
   }
 
+  function handleUpdateAvatar(avatar) {
+    setLoading(true);
+    api.editUserAvatar(avatar) 
+      .then(res => {
+        setCurrentUser({ ...currentUser,
+          userAvatar: res.avatar
+        })
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+    closeAllPopups(); 
+  }
+
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
     switchSubmitButtonState(avatarForm)
@@ -175,7 +188,7 @@ function App() {
       onClose={closeAllPopups} 
       isOpen={isEditAvatarPopupOpen}
       errorMessage={errorMessage}
-      onUpdateUser={handleUpdateUser}
+      onUpdateAvatar={handleUpdateAvatar}
       loading={loading}
       isValid={checkInputValidity} 
       isActive={submitState ? "" : "disabled"}>

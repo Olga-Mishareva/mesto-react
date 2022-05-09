@@ -1,22 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 import Validation from "./Validation";
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateUser, loading, isValid, isActive, errorMessage }) {
-  const [avatar, setAvatar] = useState(''); 
+function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, isActive, errorMessage }) {
+  const avatarRef = React.useRef();
 
-  function handleAvatarInput(e) {
-    setAvatar(e.target.value);
+  function handleSubmit(e) {
+    e.preventDefault();
+    onUpdateAvatar({
+      avatar: avatarRef.current.value
+    });
   }
+
+  useEffect(() => {
+    avatarRef.current.value = '';
+  }, [isOpen])
+
 
   return (
     <PopupWithForm 
         title="Обновить аватар" name="edit-avatar" 
         onClose={onClose} isValid={isValid} isOpen={isOpen} isActive={isActive}
-        submitBtn={loading ? 'Сохраниение...' : 'Сохранить'}> 
+        submitBtn={loading ? 'Сохраниение...' : 'Сохранить'}
+        onSubmit={handleSubmit}> 
 
-        <input className="popup__input popup__input_type_avatar" value={avatar} type="url" required name="avatar"
-          placeholder="Ссылка на картинку" onChange={handleAvatarInput}/>
+        <input ref={avatarRef} className="popup__input popup__input_type_avatar" 
+          type="url" required name="avatar" placeholder="Ссылка на картинку"/>
         <Validation errorMessage={errorMessage} name="avatar"/>
       </PopupWithForm>
   ) 
