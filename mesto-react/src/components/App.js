@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import Validation from "./Validation";
+import EditProfilePopup from "./EditProfilePopup";
 import api from "../utils/api";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -22,12 +23,12 @@ function App() {
   const [cardForm, setCardForm] = useState(null);
 
   const [avatarInput, setAvatarInput] = useState(''); 
-  const [nameInput, setNameInput] = useState('');
-  const [infoInput, setInfoInput] = useState('');
+  // const [nameInput, setNameInput] = useState('');
+  // const [infoInput, setInfoInput] = useState('');
   const [titleInput, setTitleInput] = useState('');
   const [imageInput, setImageInput] = useState('');
   
-  const [errorMessage, setErrorMessage] = useState({});
+  const [errorMessage, setErrorMessage] = useState({});  // сделать контекстом??
   const [submitState, setSubmitState] = useState(false);
 
   const [currentUser, setCurrentUser] = useState({});
@@ -54,8 +55,8 @@ function App() {
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
     switchSubmitButtonState(userForm)
-    setNameInput(currentUser.userName);
-    setInfoInput(currentUser.userInfo);
+    // setNameInput(currentUser.userName);
+    // setInfoInput(currentUser.userInfo);
   }
 
   function handleAddPlaceClick() {
@@ -76,10 +77,10 @@ function App() {
     cleanAllInputs();
   }
 
-  function cleanAllInputs() {
+  function cleanAllInputs() {  // передать очистку инпутов в компонент
     setAvatarInput('');   
-    setNameInput('');
-    setInfoInput('');
+    // setNameInput('');
+    // setInfoInput('');
     setTitleInput('');
     setImageInput('');
   }
@@ -115,6 +116,7 @@ function App() {
 
     switchSubmitButtonState(e.currentTarget)
   }
+ 
 
   function switchSubmitButtonState(form) {
     // console.log(form)
@@ -127,12 +129,12 @@ function App() {
   function handleAvatarInput(e) {
     setAvatarInput(e.target.value);
   }
-  function handleNameInput(e) {
-    setNameInput(e.target.value);
-  }
-  function handleInfoInput(e) {
-    setInfoInput(e.target.value);
-  }
+  // function handleNameInput(e) {
+  //   setNameInput(e.target.value);
+  // }
+  // function handleInfoInput(e) {
+  //   setInfoInput(e.target.value);
+  // }
   function handleTitleInput(e) {
     setTitleInput(e.target.value);
   }
@@ -146,8 +148,10 @@ function App() {
     <div className="page">
       <Header />
 
-      <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} 
-      onAddPlace={handleAddPlaceClick} onCardClick={handleCardClick}/>
+      <Main onEditAvatar={handleEditAvatarClick} 
+      onEditProfile={handleEditProfileClick} 
+      onAddPlace={handleAddPlaceClick} 
+      onCardClick={handleCardClick}/>
 
       <Footer />
 
@@ -160,8 +164,15 @@ function App() {
           placeholder="Ссылка на картинку" onChange={handleAvatarInput}/>
         <Validation errorMessage={errorMessage} name="avatar"/>
       </PopupWithForm>
+
+      <EditProfilePopup onClose={closeAllPopups} 
+        isValid={checkInputValidity} 
+        isOpen={isEditProfilePopupOpen}
+        errorMessage={errorMessage}
+        isActive={submitState ? "" : "disabled"} >
+      </EditProfilePopup>
       
-      <PopupWithForm 
+      {/* <PopupWithForm 
         title="Редактировать профиль" name="edit-profile" submitBtn="Сохранить" 
         onClose={closeAllPopups} isValid={checkInputValidity} isOpen={isEditProfilePopupOpen}
         isActive={submitState ? "" : "disabled"}>
@@ -172,7 +183,7 @@ function App() {
         <input className="popup__input popup__input_type_about" value={infoInput} type="text" required minLength="2"
           maxLength="200" name="about" placeholder="О себе" onChange={handleInfoInput}/>
         <Validation errorMessage={errorMessage} name="about"/>
-      </PopupWithForm>
+      </PopupWithForm> */}
 
       <PopupWithForm 
         title="Новое место" name="add-place" submitBtn="Создать" 
