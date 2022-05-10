@@ -1,17 +1,14 @@
 import { useState, useEffect } from "react";
 import Header from "./Header";
-import  Main from './Main';
+import Main from './Main';
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import Validation from "./Validation";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import api from "../utils/api";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-
-
 
 function App() {
 
@@ -35,9 +32,9 @@ function App() {
   function handleUpdateAvatar(avatar) {
     setLoading(true);
     api.editUserAvatar(avatar) 
-      .then(res => {
+      .then(data => {
         setCurrentUser({ ...currentUser,
-          userAvatar: res.avatar
+          userAvatar: data.avatar
         })
       })
       .catch(err => console.log(err))
@@ -54,12 +51,12 @@ function App() {
 
   useEffect(() => {
     api.getUserData()
-      .then(res => {
+      .then(data => {
         setCurrentUser({ ...currentUser, 
-          userName: res.name, 
-          userInfo: res.about, 
-          userAvatar: res.avatar,
-          userId: res._id
+          userName: data.name, 
+          userInfo: data.about, 
+          userAvatar: data.avatar,
+          userId: data._id
         })
       })
       .catch(err => console.log(err));
@@ -68,10 +65,10 @@ function App() {
   function handleUpdateUser(data) {
     setLoading(true);                 
     api.editUserData({ data })
-      .then(res => {
+      .then(data => {
         setCurrentUser({ ...currentUser,
-          userName: res.name,
-          userInfo: res.about
+          userName: data.name,
+          userInfo: data.about
         })
       })
       .catch(err => console.log(err))
@@ -84,8 +81,8 @@ function App() {
   const [cards, setCards] = useState([]);
 
   function handleAddPlaceClick() {
-  setIsAddPlacePopupOpen(true);
-  switchSubmitButtonState(cardForm)
+    setIsAddPlacePopupOpen(true);
+    switchSubmitButtonState(cardForm)
   }
 
   useEffect(() => {
@@ -104,6 +101,23 @@ function App() {
       })
       .catch(err => console.log(err));
   }, []);
+
+  function handleAddPlaceSubmit(elem) {
+    setLoading(true); 
+    api.addNewCard({ elem })
+      .then(newCard => {
+        setCards([{
+          name: newCard.name,
+          link: newCard.link,
+          cardId: newCard._id,
+          likes: newCard.likes,
+          ownerId: newCard.owner._id,
+        }, ...cards]);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+    closeAllPopups();  
+  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(like => like._id === currentUser.userId);
@@ -134,7 +148,6 @@ function App() {
       })
       .catch(err => console.log(err));
   }
-  // console.log(cards)
 
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -142,19 +155,14 @@ function App() {
 
 // ============================ ALL POPUPS ======================================
 
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard(null);
     setErrorMessage({});
-    // cleanAllInputs();
   }
-
-  // function cleanAllInputs() {  // передать очистку инпутов в компонент
-  //   setTitleInput('');
-  //   setImageInput('');
-  // }
 
   useEffect(() => {
     function handleEscClick(e) {
@@ -172,6 +180,7 @@ function App() {
 
 
   // ============================ VALIDATION ======================================
+
 
   const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
   const [userForm, setUserForm] = useState(null);
@@ -202,6 +211,7 @@ function App() {
     } else setSubmitState(false) 
   }
 
+ // ===========================================================================================
   
   return (
     <CurrentUserContext.Provider value={currentUser}> {/* значение, которое передается всем дочерним элементам */}
@@ -241,26 +251,12 @@ function App() {
       <AddPlacePopup 
         onClose={closeAllPopups} 
         isOpen={isAddPlacePopupOpen}
-        // onAddCard={handleAddCard}
+        onAddCard={handleAddPlaceSubmit}
         loading={loading}
         errorMessage={errorMessage}
         isValid={checkInputValidity} 
         isActive={submitState ? "" : "disabled"}>
       </AddPlacePopup>
-
-      {/* <PopupWithForm 
-        title="Новое место" name="add-place" submitBtn="Создать" 
-        onClose={closeAllPopups} isValid={checkInputValidity} 
-        isOpen={isAddPlacePopupOpen}
-        isActive={submitState ? "" : "disabled"}> 
-
-        <input className="popup__input popup__input_type_place" value={titleInput} type="text" required minLength="2"
-          maxLength="40" name="place" placeholder="Название" onChange={handleTitleInput}/>
-        <Validation errorMessage={errorMessage} name="place"/>
-        <input className="popup__input popup__input_type_img" value={imageInput} type="url" required name="img"
-          placeholder="Ссылка на картинку" onChange={handleImageInput}/>
-        <Validation errorMessage={errorMessage} name="img"/>
-      </PopupWithForm> */}
 
       <PopupWithForm title="Вы уверены?" name="delete-place" submitBtn="Да" onClose={closeAllPopups}/>
 

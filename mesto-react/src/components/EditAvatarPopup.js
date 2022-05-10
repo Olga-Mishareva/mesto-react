@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PopupWithForm from "./PopupWithForm";
 import Validation from "./Validation";
 
@@ -7,20 +7,19 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, is
 
   function handleSubmit(e) {
     e.preventDefault();
+
     onUpdateAvatar({
       avatar: avatarRef.current.value
     });
+    avatarRef.current.value = ''
   }
-
-  useEffect(() => {
-    avatarRef.current.value = '';
-  }, [isOpen])
 
 
   return (
     <PopupWithForm 
         title="Обновить аватар" name="edit-avatar" 
-        onClose={onClose} isValid={isValid} isOpen={isOpen} isActive={isActive}
+        onClose={onClose} isOpen={isOpen}
+        isValid={isValid} isActive={isActive}
         submitBtn={loading ? 'Сохраниение...' : 'Сохранить'}
         onSubmit={handleSubmit}> 
 

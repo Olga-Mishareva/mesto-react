@@ -4,9 +4,8 @@ import PopupWithForm from "./PopupWithForm";
 import Validation from "./Validation";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser, loading, isValid, isActive, errorMessage }) {
-  const [name, setName] = useState('');  // подумать над изначальным состоянием
+  const [name, setName] = useState(''); 
   const [description, setDescription] = useState('');
-
   const currentUser = React.useContext(CurrentUserContext);
 
   function handleName(e) {
@@ -15,11 +14,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, loading, isValid, isA
   function handleDescription(e) {
     setDescription(e.target.value);
   }
-
-  useEffect(() => {
-    setName(currentUser.userName);
-    setDescription(currentUser.userInfo);
-  }, [currentUser, isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,11 +24,17 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, loading, isValid, isA
     })
   }
 
+  useEffect(() => {
+    setName(currentUser.userName);
+    setDescription(currentUser.userInfo);
+  }, [currentUser, isOpen]);
+
 
   return (
     <PopupWithForm 
         title="Редактировать профиль" name="edit-profile" 
-        onClose={onClose} isValid={isValid} isOpen={isOpen} isActive={isActive} 
+        onClose={onClose} isOpen={isOpen}
+        isValid={isValid} isActive={isActive}
         submitBtn={loading ? 'Сохраниение...' : 'Сохранить'} 
         onSubmit={handleSubmit}>
 
@@ -45,7 +45,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, loading, isValid, isA
         <input className="popup__input popup__input_type_about" value={description} type="text" required minLength="2"
           maxLength="200" name="about" placeholder="О себе" onChange={handleDescription}/>
         <Validation errorMessage={errorMessage} name="about"/>
-
       </PopupWithForm>
   )
 }
