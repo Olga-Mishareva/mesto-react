@@ -7,6 +7,7 @@ import ImagePopup from "./ImagePopup";
 import Validation from "./Validation";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import api from "../utils/api";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -17,50 +18,18 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+
   const [selectedCard, setSelectedCard] = useState(null);
 
   const [loading, setLoading] = useState(false);
-
-  const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
-  const [userForm, setUserForm] = useState(null);
-  const [cardForm, setCardForm] = useState(null);
-
-  // const [avatarInput, setAvatarInput] = useState(''); 
-  // const [nameInput, setNameInput] = useState('');
-  // const [infoInput, setInfoInput] = useState('');
-  const [titleInput, setTitleInput] = useState('');
-  const [imageInput, setImageInput] = useState('');
   
-  const [errorMessage, setErrorMessage] = useState({});  // сделать контекстом??
-  const [submitState, setSubmitState] = useState(false);
-
   const [currentUser, setCurrentUser] = useState({});
 
-  useEffect(() => {
-    api.getUserData()
-      .then(res => {
-        setCurrentUser({ ...currentUser, 
-          userName: res.name, 
-          userInfo: res.about, 
-          userAvatar: res.avatar,
-          userId: res._id
-        })
-      })
-      .catch(err => console.log(err));
-  }, [])
+  // ============================ AVATAR ======================================
 
-  function handleUpdateUser(data) {
-    setLoading(true);                 
-    api.editUserData({ data })
-      .then(res => {
-        setCurrentUser({ ...currentUser,
-          userName: res.name,
-          userInfo: res.about
-        })
-      })
-      .catch(err => console.log(err))
-      .finally(() => setLoading(false));
-    closeAllPopups();  
+  function handleEditAvatarClick() {
+    setIsEditAvatarPopupOpen(true);
+    switchSubmitButtonState(avatarForm)
   }
 
   function handleUpdateAvatar(avatar) {
@@ -76,26 +45,102 @@ function App() {
     closeAllPopups(); 
   }
 
-  function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen(true);
-    switchSubmitButtonState(avatarForm)
-  }
+  // ============================ PROFILE ======================================
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
     switchSubmitButtonState(userForm)
-    // setNameInput(currentUser.userName);
-    // setInfoInput(currentUser.userInfo);
   }
+
+  useEffect(() => {
+    api.getUserData()
+      .then(res => {
+        setCurrentUser({ ...currentUser, 
+          userName: res.name, 
+          userInfo: res.about, 
+          userAvatar: res.avatar,
+          userId: res._id
+        })
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  function handleUpdateUser(data) {
+    setLoading(true);                 
+    api.editUserData({ data })
+      .then(res => {
+        setCurrentUser({ ...currentUser,
+          userName: res.name,
+          userInfo: res.about
+        })
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+    closeAllPopups();  
+  }
+
+  // ============================ CARD ======================================
+
+  const [cards, setCards] = useState([]);
 
   function handleAddPlaceClick() {
   setIsAddPlacePopupOpen(true);
   switchSubmitButtonState(cardForm)
   }
 
+  useEffect(() => {
+    api.getUsersCards()
+      .then(res => {
+        const usersCards = res.map(card => {
+          return {
+            name: card.name,
+            link: card.link,
+            cardId: card._id,
+            likes: card.likes,
+            ownerId: card.owner._id,
+          }
+        });
+        setCards(usersCards);
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(like => like._id === currentUser.userId);
+    api.changeLikeCardStatus(card.cardId, isLiked)
+      .then(res => {
+        setCards(() => cards.map(el => {
+          if(el.cardId === res._id) {
+            return {
+              name: res.name,
+              link: res.link,
+              cardId: res._id,
+              likes: res.likes,
+              ownerId: res.owner._id
+            }
+          } 
+          else return el;
+        }));
+        // перебираем массив cards и заменяем в стейте только одну карточку, 
+        // id которой совпадает с лайкнутой картой
+      })
+      .catch(err => console.log(err));
+  }
+
+  function handleCardDelete(card) {
+    api.deleteUserCard(card.cardId)
+      .then(res => {
+        setCards(() => cards.filter(el => el.cardId !== card.cardId));
+      })
+      .catch(err => console.log(err));
+  }
+  // console.log(cards)
+
   function handleCardClick(card) {
     setSelectedCard(card);
   }
+
+// ============================ ALL POPUPS ======================================
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -103,16 +148,13 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setSelectedCard(null);
     setErrorMessage({});
-    cleanAllInputs();
+    // cleanAllInputs();
   }
 
-  function cleanAllInputs() {  // передать очистку инпутов в компонент
-    // setAvatarInput('');   
-    // setNameInput('');
-    // setInfoInput('');
-    setTitleInput('');
-    setImageInput('');
-  }
+  // function cleanAllInputs() {  // передать очистку инпутов в компонент
+  //   setTitleInput('');
+  //   setImageInput('');
+  // }
 
   useEffect(() => {
     function handleEscClick(e) {
@@ -129,7 +171,14 @@ function App() {
   }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, selectedCard]);
 
 
-  // ------------------- валидация -------------------------------
+  // ============================ VALIDATION ======================================
+
+  const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
+  const [userForm, setUserForm] = useState(null);
+  const [cardForm, setCardForm] = useState(null);
+
+  const [errorMessage, setErrorMessage] = useState({});  // сделать контекстом??
+  const [submitState, setSubmitState] = useState(false);
 
   useEffect(() => {
     setAvatarForm(document.querySelector('#edit-avatar'))
@@ -146,7 +195,6 @@ function App() {
     switchSubmitButtonState(e.currentTarget)
   }
  
-
   function switchSubmitButtonState(form) {
     // console.log(form)
     if(form.checkValidity()) {
@@ -154,82 +202,56 @@ function App() {
     } else setSubmitState(false) 
   }
 
-  // собирают инфо с инпутов
-  // function handleAvatarInput(e) {
-  //   setAvatarInput(e.target.value);
-  // }
-  // function handleNameInput(e) {
-  //   setNameInput(e.target.value);
-  // }
-  // function handleInfoInput(e) {
-  //   setInfoInput(e.target.value);
-  // }
-  function handleTitleInput(e) {
-    setTitleInput(e.target.value);
-  }
-  function handleImageInput(e) {
-    setImageInput(e.target.value);
-  }
-
-    
+  
   return (
-    <CurrentUserContext.Provider value={currentUser}>   {/* значение, которое передается всем дочерним элементам */}
+    <CurrentUserContext.Provider value={currentUser}> {/* значение, которое передается всем дочерним элементам */}
     <div className="page">
       <Header />
 
-      <Main onEditAvatar={handleEditAvatarClick} 
+      <Main cards={cards}
+      onEditAvatar={handleEditAvatarClick} 
       onEditProfile={handleEditProfileClick} 
       onAddPlace={handleAddPlaceClick} 
-      onCardClick={handleCardClick}/>
+      onCardClick={handleCardClick}
+      onCardLike={handleCardLike} 
+      onCardDelete={handleCardDelete}/>
 
       <Footer />
 
       <EditAvatarPopup
       onClose={closeAllPopups} 
       isOpen={isEditAvatarPopupOpen}
-      errorMessage={errorMessage}
       onUpdateAvatar={handleUpdateAvatar}
       loading={loading}
+      errorMessage={errorMessage}
       isValid={checkInputValidity} 
       isActive={submitState ? "" : "disabled"}>
       </EditAvatarPopup>
 
-      {/* <PopupWithForm 
-        title="Обновить аватар" name="edit-avatar" submitBtn={loading ? 'Сохраниение...' : 'Сохранить'} 
-        onClose={closeAllPopups} isValid={checkInputValidity} isOpen={isEditAvatarPopupOpen}
-        isActive={submitState ? "" : "disabled"}> 
-
-        <input className="popup__input popup__input_type_avatar" value={avatarInput} type="url" required name="avatar"
-          placeholder="Ссылка на картинку" onChange={handleAvatarInput}/>
-        <Validation errorMessage={errorMessage} name="avatar"/>
-      </PopupWithForm> */}
-
       <EditProfilePopup 
         onClose={closeAllPopups} 
         isOpen={isEditProfilePopupOpen}
-        errorMessage={errorMessage}
         onUpdateUser={handleUpdateUser}
         loading={loading}
+        errorMessage={errorMessage}
         isValid={checkInputValidity} 
         isActive={submitState ? "" : "disabled"}>
       </EditProfilePopup>
-      
-      {/* <PopupWithForm 
-        title="Редактировать профиль" name="edit-profile" submitBtn="Сохранить" 
-        onClose={closeAllPopups} isValid={checkInputValidity} isOpen={isEditProfilePopupOpen}
+
+      <AddPlacePopup 
+        onClose={closeAllPopups} 
+        isOpen={isAddPlacePopupOpen}
+        // onAddCard={handleAddCard}
+        loading={loading}
+        errorMessage={errorMessage}
+        isValid={checkInputValidity} 
         isActive={submitState ? "" : "disabled"}>
+      </AddPlacePopup>
 
-        <input className="popup__input popup__input_type_username" value={nameInput} type="text" required minLength="2" maxLength="40"
-          name="username" placeholder="Имя" onChange={handleNameInput}/>
-        <Validation errorMessage={errorMessage} name="username"/>       
-        <input className="popup__input popup__input_type_about" value={infoInput} type="text" required minLength="2"
-          maxLength="200" name="about" placeholder="О себе" onChange={handleInfoInput}/>
-        <Validation errorMessage={errorMessage} name="about"/>
-      </PopupWithForm> */}
-
-      <PopupWithForm 
+      {/* <PopupWithForm 
         title="Новое место" name="add-place" submitBtn="Создать" 
-        onClose={closeAllPopups} isValid={checkInputValidity} isOpen={isAddPlacePopupOpen}
+        onClose={closeAllPopups} isValid={checkInputValidity} 
+        isOpen={isAddPlacePopupOpen}
         isActive={submitState ? "" : "disabled"}> 
 
         <input className="popup__input popup__input_type_place" value={titleInput} type="text" required minLength="2"
@@ -238,7 +260,7 @@ function App() {
         <input className="popup__input popup__input_type_img" value={imageInput} type="url" required name="img"
           placeholder="Ссылка на картинку" onChange={handleImageInput}/>
         <Validation errorMessage={errorMessage} name="img"/>
-      </PopupWithForm>
+      </PopupWithForm> */}
 
       <PopupWithForm title="Вы уверены?" name="delete-place" submitBtn="Да" onClose={closeAllPopups}/>
 
