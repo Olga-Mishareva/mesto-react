@@ -11,16 +11,23 @@ import api from "../utils/api";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
+  const [currentUser, setCurrentUser] = useState({});
 
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-
-  const [selectedCard, setSelectedCard] = useState(null);
-
   const [loading, setLoading] = useState(false);
+
+  const [cards, setCards] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null);
   
-  const [currentUser, setCurrentUser] = useState({});
+  const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
+  const [userForm, setUserForm] = useState(null);
+  const [cardForm, setCardForm] = useState(null);
+
+  const [errorMessage, setErrorMessage] = useState({});  // сделать контекстом??
+  const [submitState, setSubmitState] = useState(false);
+  const submitButtonState = submitState ? "" : "disabled";
 
   // ============================ AVATAR ======================================
 
@@ -77,8 +84,6 @@ function App() {
   }
 
   // ============================ CARD ======================================
-
-  const [cards, setCards] = useState([]);
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
@@ -155,7 +160,6 @@ function App() {
 
 // ============================ ALL POPUPS ======================================
 
-
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -181,14 +185,6 @@ function App() {
 
   // ============================ VALIDATION ======================================
 
-
-  const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
-  const [userForm, setUserForm] = useState(null);
-  const [cardForm, setCardForm] = useState(null);
-
-  const [errorMessage, setErrorMessage] = useState({});  // сделать контекстом??
-  const [submitState, setSubmitState] = useState(false);
-
   useEffect(() => {
     setAvatarForm(document.querySelector('#edit-avatar'))
     setUserForm(document.querySelector('#edit-profile'))
@@ -205,7 +201,6 @@ function App() {
   }
  
   function switchSubmitButtonState(form) {
-    // console.log(form)
     if(form.checkValidity()) {
       setSubmitState(true)
     } else setSubmitState(false) 
@@ -235,7 +230,7 @@ function App() {
       loading={loading}
       errorMessage={errorMessage}
       isValid={checkInputValidity} 
-      isActive={submitState ? "" : "disabled"}>
+      isActive={submitButtonState}>
       </EditAvatarPopup>
 
       <EditProfilePopup 
@@ -245,7 +240,7 @@ function App() {
         loading={loading}
         errorMessage={errorMessage}
         isValid={checkInputValidity} 
-        isActive={submitState ? "" : "disabled"}>
+        isActive={submitButtonState}>
       </EditProfilePopup>
 
       <AddPlacePopup 
@@ -255,7 +250,7 @@ function App() {
         loading={loading}
         errorMessage={errorMessage}
         isValid={checkInputValidity} 
-        isActive={submitState ? "" : "disabled"}>
+        isActive={submitButtonState}>
       </AddPlacePopup>
 
       <PopupWithForm title="Вы уверены?" name="delete-place" submitBtn="Да" onClose={closeAllPopups}/>
