@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Header from "./Header";
 import Main from './Main';
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -238,47 +237,51 @@ function App() {
 
       <Footer />
 
-      <EditAvatarPopup 
-      onClose={closeAllPopups} 
-      isOpen={isEditAvatarPopupOpen}
-      onUpdateAvatar={handleUpdateAvatar}
-      loading={loading}
-      errorMessage={errorMessage}
-      isValid={checkInputValidity} 
-      onSetForms={setForms}
-      isActive={submitButtonState}>
-      </EditAvatarPopup>
+      {isEditAvatarPopupOpen && 
+        <EditAvatarPopup 
+          onClose={closeAllPopups} 
+          isOpen={isEditAvatarPopupOpen}
+          onUpdateAvatar={handleUpdateAvatar}
+          loading={loading}
+          errorMessage={errorMessage}
+          isValid={checkInputValidity} 
+          onSetForms={setForms}
+          isActive={submitButtonState}>
+        </EditAvatarPopup>}
 
-      <EditProfilePopup 
-        onClose={closeAllPopups} 
-        isOpen={isEditProfilePopupOpen}
-        onUpdateUser={handleUpdateUser}
-        loading={loading}
-        errorMessage={errorMessage}
-        isValid={checkInputValidity} 
-        onSetForms={setForms}
-        isActive={submitButtonState}>
-      </EditProfilePopup>
+      {isEditProfilePopupOpen &&
+        <EditProfilePopup 
+          onClose={closeAllPopups} 
+          isOpen={isEditProfilePopupOpen}
+          onUpdateUser={handleUpdateUser}
+          loading={loading}
+          errorMessage={errorMessage}
+          isValid={checkInputValidity} 
+          onSetForms={setForms}
+          isActive={submitButtonState}>
+        </EditProfilePopup>}
 
-      <AddPlacePopup 
-        onClose={closeAllPopups} 
-        isOpen={isAddPlacePopupOpen}
-        onAddCard={handleAddPlaceSubmit}
-        loading={loading}
-        errorMessage={errorMessage}
-        isValid={checkInputValidity}
-        onSetForms={setForms} 
-        isActive={submitButtonState}>
-      </AddPlacePopup>
+      {isAddPlacePopupOpen && 
+        <AddPlacePopup 
+          onClose={closeAllPopups} 
+          isOpen={isAddPlacePopupOpen}
+          onAddCard={handleAddPlaceSubmit}
+          loading={loading}
+          errorMessage={errorMessage}
+          isValid={checkInputValidity}
+          onSetForms={setForms} 
+          isActive={submitButtonState}>
+        </AddPlacePopup>}
 
-      <ConfirmPopup 
-        card={toRemove}
-        onClose={closeAllPopups} 
-        isOpen={isConfirmPopupOpen}
-        onDeleteCard={handleCardDelete}
-        onSetForms={setForms}
-        loading={loading}>
-      </ConfirmPopup>
+      {isConfirmPopupOpen &&
+        <ConfirmPopup 
+          card={toRemove}
+          onClose={closeAllPopups} 
+          isOpen={isConfirmPopupOpen}
+          onDeleteCard={handleCardDelete}
+          onSetForms={setForms}
+          loading={loading}>
+        </ConfirmPopup>}
 
       {selectedCard && 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}
