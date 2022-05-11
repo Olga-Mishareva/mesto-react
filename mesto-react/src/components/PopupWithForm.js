@@ -1,11 +1,18 @@
-function PopupWithForm({ title, name, submitBtn, isOpen, onClose, isActive, isValid, onSubmit, children }) {
+import React, { useState, useEffect } from "react";
+
+function PopupWithForm({ title, name, submitBtn, isOpen, onClose, isActive, isValid, onSubmit, onSetForms, children }) {
+  const formRef = React.useRef();
+  
+  useEffect(() => {
+    onSetForms(formRef.current)                                                     
+  },[formRef])
 
   
   return (
-    <div className={`popup popup_type_${name} ${isOpen ? 'popup_opened' : ''}`} onMouseDown={onClose} >
+    <div className={`popup popup_type_${name} ${isOpen ? 'popup_opened' : ''}`} onMouseDown={onClose}>
       <div className={`popup__container popup__container_type_${name}`} onMouseDown={(e) => e.stopPropagation()}>
         <button className="popup__close-button" type="button" onClick={onClose}></button>
-        <form className="popup__form" noValidate name={name} action="#" method="post" id={name} 
+        <form ref={formRef} className="popup__form" noValidate name={name} action="#" method="post" id={name} 
           onChange={isValid} onSubmit={onSubmit}>
           <h2 className={`popup__title popup__title_type_${name}`}>{title}</h2>
           {children}

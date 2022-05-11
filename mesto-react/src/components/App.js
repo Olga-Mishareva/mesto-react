@@ -21,7 +21,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   
-  const [avatarForm, setAvatarForm] = useState(null); // подумать еще, как лучше достать формы
+  const [avatarForm, setAvatarForm] = useState(null); 
   const [userForm, setUserForm] = useState(null);
   const [cardForm, setCardForm] = useState(null);
 
@@ -33,7 +33,7 @@ function App() {
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
-    switchSubmitButtonState(avatarForm)
+    switchSubmitButtonState(avatarForm);
   }
 
   function handleUpdateAvatar(avatar) {
@@ -53,7 +53,7 @@ function App() {
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
-    switchSubmitButtonState(userForm)
+    switchSubmitButtonState(userForm);
   }
 
   useEffect(() => {
@@ -87,7 +87,7 @@ function App() {
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
-    switchSubmitButtonState(cardForm)
+    switchSubmitButtonState(cardForm);
   }
 
   useEffect(() => {
@@ -185,25 +185,26 @@ function App() {
 
   // ============================ VALIDATION ======================================
 
-  useEffect(() => {
-    setAvatarForm(document.querySelector('#edit-avatar'))
-    setUserForm(document.querySelector('#edit-profile'))
-    setCardForm(document.querySelector('#add-place'))
-  }, [])
+
+  function setForms(form) {
+    // console.log(form)
+    if(form.name === 'edit-avatar') setAvatarForm(form);
+    if(form.name === 'edit-profile') setUserForm(form);
+    if(form.name === 'add-place') setCardForm(form);
+  }
 
   function checkInputValidity(e) {
     if(!e.currentTarget.checkValidity()) {
       setErrorMessage({...errorMessage, [e.target.name]: e.target.validationMessage}); 
     }
     else setErrorMessage({})
-
-    switchSubmitButtonState(e.currentTarget)
+    switchSubmitButtonState(e.currentTarget);
   }
  
   function switchSubmitButtonState(form) {
     if(form.checkValidity()) {
-      setSubmitState(true)
-    } else setSubmitState(false) 
+      setSubmitState(true);
+    } else setSubmitState(false);
   }
 
  // ===========================================================================================
@@ -223,13 +224,14 @@ function App() {
 
       <Footer />
 
-      <EditAvatarPopup
+      <EditAvatarPopup 
       onClose={closeAllPopups} 
       isOpen={isEditAvatarPopupOpen}
       onUpdateAvatar={handleUpdateAvatar}
       loading={loading}
       errorMessage={errorMessage}
       isValid={checkInputValidity} 
+      onSetForms={setForms}
       isActive={submitButtonState}>
       </EditAvatarPopup>
 
@@ -240,6 +242,7 @@ function App() {
         loading={loading}
         errorMessage={errorMessage}
         isValid={checkInputValidity} 
+        onSetForms={setForms}
         isActive={submitButtonState}>
       </EditProfilePopup>
 
@@ -249,15 +252,17 @@ function App() {
         onAddCard={handleAddPlaceSubmit}
         loading={loading}
         errorMessage={errorMessage}
-        isValid={checkInputValidity} 
+        isValid={checkInputValidity}
+        onSetForms={setForms} 
         isActive={submitButtonState}>
       </AddPlacePopup>
 
-      <PopupWithForm title="Вы уверены?" name="delete-place" submitBtn="Да" onClose={closeAllPopups}/>
+      <PopupWithForm title="Вы уверены?" name="delete-place" submitBtn="Да" 
+        onClose={closeAllPopups} onSetForms={setForms}/>
 
       {selectedCard && 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}
-        isOpen={selectedCard ? 'popup_opened' : ''}/>
+          isOpen={selectedCard ? 'popup_opened' : ''}/>
       }
   </div>
   </CurrentUserContext.Provider>

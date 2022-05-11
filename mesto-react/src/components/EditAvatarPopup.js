@@ -2,7 +2,7 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm";
 import Validation from "./Validation";
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, isActive, errorMessage }) {
+function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, isActive, errorMessage, onSetForms }) {
   const avatarRef = React.useRef();
 
   function handleSubmit(e) {
@@ -21,7 +21,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, is
         onClose={onClose} isOpen={isOpen}
         isValid={isValid} isActive={isActive}
         submitBtn={loading ? 'Сохраниение...' : 'Сохранить'}
-        onSubmit={handleSubmit}> 
+        onSubmit={handleSubmit} onSetForms={onSetForms}> 
 
         <input ref={avatarRef} className="popup__input popup__input_type_avatar" 
           type="url" required name="avatar" placeholder="Ссылка на картинку"/>
