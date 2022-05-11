@@ -56,6 +56,7 @@ function App() {
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
+    console.log(userForm)
     switchSubmitButtonState(userForm);
   }
 
@@ -200,7 +201,7 @@ function App() {
 
 
   function setForms(form) {
-    // console.log(form)
+    console.log(form)
     if(form.name === 'edit-avatar') setAvatarForm(form);
     if(form.name === 'edit-profile') setUserForm(form);
     if(form.name === 'add-place') setCardForm(form);
@@ -237,41 +238,38 @@ function App() {
 
       <Footer />
 
-      {isEditAvatarPopupOpen && 
-        <EditAvatarPopup 
-          onClose={closeAllPopups} 
-          isOpen={isEditAvatarPopupOpen}
-          onUpdateAvatar={handleUpdateAvatar}
-          loading={loading}
-          errorMessage={errorMessage}
-          isValid={checkInputValidity} 
-          onSetForms={setForms}
-          isActive={submitButtonState}>
-        </EditAvatarPopup>}
+      <EditAvatarPopup 
+        onClose={closeAllPopups} 
+        isOpen={isEditAvatarPopupOpen}
+        onUpdateAvatar={handleUpdateAvatar}
+        loading={loading}
+        errorMessage={errorMessage}
+        isValid={checkInputValidity} 
+        onSetForms={setForms}
+        isActive={submitButtonState}>
+      </EditAvatarPopup>
 
-      {isEditProfilePopupOpen &&
-        <EditProfilePopup 
-          onClose={closeAllPopups} 
-          isOpen={isEditProfilePopupOpen}
-          onUpdateUser={handleUpdateUser}
-          loading={loading}
-          errorMessage={errorMessage}
-          isValid={checkInputValidity} 
-          onSetForms={setForms}
-          isActive={submitButtonState}>
-        </EditProfilePopup>}
+      <EditProfilePopup 
+        onClose={closeAllPopups} 
+        isOpen={isEditProfilePopupOpen}
+        onUpdateUser={handleUpdateUser}
+        loading={loading}
+        errorMessage={errorMessage}
+        isValid={checkInputValidity} 
+        onSetForms={setForms}
+        isActive={submitButtonState}>
+      </EditProfilePopup>
 
-      {isAddPlacePopupOpen && 
-        <AddPlacePopup 
-          onClose={closeAllPopups} 
-          isOpen={isAddPlacePopupOpen}
-          onAddCard={handleAddPlaceSubmit}
-          loading={loading}
-          errorMessage={errorMessage}
-          isValid={checkInputValidity}
-          onSetForms={setForms} 
-          isActive={submitButtonState}>
-        </AddPlacePopup>}
+      <AddPlacePopup 
+        onClose={closeAllPopups} 
+        isOpen={isAddPlacePopupOpen}
+        onAddCard={handleAddPlaceSubmit}
+        loading={loading}
+        errorMessage={errorMessage}
+        isValid={checkInputValidity}
+        onSetForms={setForms} 
+        isActive={submitButtonState}>
+      </AddPlacePopup>
 
       {isConfirmPopupOpen &&
         <ConfirmPopup 
