@@ -3,9 +3,10 @@ import React, { useState, useEffect } from "react";
 function PopupWithForm({ title, name, submitBtn, isOpen, onClose, isActive, isValid, onSubmit, onSetForms, children }) {
   const formRef = React.useRef();
   
-  useEffect(() => {
-    onSetForms(formRef.current)                                                     
-  },[formRef])
+  // useEffect(() => {
+  //   console.log(formRef.current)
+  //   onSetForms(formRef.current)                                                     
+  // },[formRef])
 
   
   return (

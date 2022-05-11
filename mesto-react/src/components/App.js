@@ -7,6 +7,7 @@ import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import ConfirmPopup from "./ConfirmPopup";
 import api from "../utils/api";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -16,16 +17,19 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [toRemove, setToRemove] = useState(null);
   
   const [avatarForm, setAvatarForm] = useState(null); 
   const [userForm, setUserForm] = useState(null);
   const [cardForm, setCardForm] = useState(null);
 
-  const [errorMessage, setErrorMessage] = useState({});  // сделать контекстом??
+  const [errorMessage, setErrorMessage] = useState({});  
   const [submitState, setSubmitState] = useState(false);
   const submitButtonState = submitState ? "" : "disabled";
 
@@ -147,11 +151,19 @@ function App() {
   }
 
   function handleCardDelete(card) {
+    setLoading(true);
     api.deleteUserCard(card.cardId)
       .then(res => {
         setCards(() => cards.filter(el => el.cardId !== card.cardId));
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+    closeAllPopups();  
+  }
+
+  function handleDeleteClick(card) {
+    setToRemove(card);
+    setIsConfirmPopupOpen(true);
   }
 
   function handleCardClick(card) {
@@ -164,6 +176,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsConfirmPopupOpen(false);
     setSelectedCard(null);
     setErrorMessage({});
   }
@@ -174,13 +187,14 @@ function App() {
         closeAllPopups();
       }
     }
-    if(isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard) {
+    if(isEditAvatarPopupOpen || isEditProfilePopupOpen 
+      || isAddPlacePopupOpen || isConfirmPopupOpen || selectedCard) {
       document.addEventListener('keydown', handleEscClick);
       return () => {
         document.removeEventListener('keydown', handleEscClick);
       }
     }
-  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, selectedCard]);
+  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, isConfirmPopupOpen, selectedCard]);
 
 
   // ============================ VALIDATION ======================================
@@ -220,7 +234,7 @@ function App() {
       onAddPlace={handleAddPlaceClick} 
       onCardClick={handleCardClick}
       onCardLike={handleCardLike} 
-      onCardDelete={handleCardDelete}/>
+      onConfirmDelete={handleDeleteClick}/>
 
       <Footer />
 
@@ -257,8 +271,14 @@ function App() {
         isActive={submitButtonState}>
       </AddPlacePopup>
 
-      <PopupWithForm title="Вы уверены?" name="delete-place" submitBtn="Да" 
-        onClose={closeAllPopups} onSetForms={setForms}/>
+      <ConfirmPopup 
+        card={toRemove}
+        onClose={closeAllPopups} 
+        isOpen={isConfirmPopupOpen}
+        onDeleteCard={handleCardDelete}
+        onSetForms={setForms}
+        loading={loading}>
+      </ConfirmPopup>
 
       {selectedCard && 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}
