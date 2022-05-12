@@ -56,7 +56,6 @@ function App() {
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
-    console.log(userForm)
     switchSubmitButtonState(userForm);
   }
 
@@ -181,27 +180,9 @@ function App() {
     setErrorMessage({});
   }
 
-  useEffect(() => {
-    function handleEscClick(e) {
-      if(e.key === 'Escape') {
-        closeAllPopups();
-      }
-    }
-    if(isEditAvatarPopupOpen || isEditProfilePopupOpen 
-      || isAddPlacePopupOpen || isConfirmPopupOpen || selectedCard) {
-      document.addEventListener('keydown', handleEscClick);
-      return () => {
-        document.removeEventListener('keydown', handleEscClick);
-      }
-    }
-  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, isConfirmPopupOpen, selectedCard]);
-
-
   // ============================ VALIDATION ======================================
 
-
   function setForms(form) {
-    console.log(form)
     if(form.name === 'edit-avatar') setAvatarForm(form);
     if(form.name === 'edit-profile') setUserForm(form);
     if(form.name === 'add-place') setCardForm(form);

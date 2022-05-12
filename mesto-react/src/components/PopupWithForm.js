@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
+import useEscapeClick from "../utils/useEscapeClick";
 
 function PopupWithForm({ title, name, submitBtn, isOpen, onClose, isActive, isValid, onSubmit, onSetForms, children }) {
   const formRef = React.useRef();
+
+  useEscapeClick(isOpen, onClose);
   
   useEffect(() => {
-    console.log(formRef.current)
     onSetForms(formRef.current)                                                     
   },[formRef])
 

@@ -1,4 +1,7 @@
+import useEscapeClick from "../utils/useEscapeClick";
+
 function ImagePopup({ card, isOpen, onClose }) {
+  useEscapeClick(isOpen, onClose);
 
   return (
     <div className={`popup popup_type_show-image ${isOpen}`} onClick={onClose}>
