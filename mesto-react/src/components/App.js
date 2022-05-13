@@ -100,7 +100,7 @@ function App() {
           return {
             name: card.name,
             link: card.link,
-            cardId: card._id,
+            _id: card._id,
             likes: card.likes,
             ownerId: card.owner._id,
           }
@@ -114,13 +114,7 @@ function App() {
     setLoading(true); 
     api.addNewCard({ elem })
       .then(newCard => {
-        setCards([{
-          name: newCard.name,
-          link: newCard.link,
-          cardId: newCard._id,
-          likes: newCard.likes,
-          ownerId: newCard.owner._id,
-        }, ...cards]);
+        setCards([newCard, ...cards]);
       })
       .catch(err => console.log(err))
       .finally(() => setLoading(false));
@@ -129,19 +123,10 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(like => like._id === currentUser.userId);
-    api.changeLikeCardStatus(card.cardId, isLiked)
-      .then(res => {
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then(likedCard => {
         setCards(() => cards.map(el => {
-          if(el.cardId === res._id) {
-            return {
-              name: res.name,
-              link: res.link,
-              cardId: res._id,
-              likes: res.likes,
-              ownerId: res.owner._id
-            }
-          } 
-          else return el;
+          return el._id === likedCard._id ? likedCard : el;
         }));
         // перебираем массив cards и заменяем в стейте только одну карточку, 
         // id которой совпадает с лайкнутой картой
@@ -151,9 +136,9 @@ function App() {
 
   function handleCardDelete(card) {
     setLoading(true);
-    api.deleteUserCard(card.cardId)
+    api.deleteUserCard(card._id)
       .then(res => {
-        setCards(() => cards.filter(el => el.cardId !== card.cardId));
+        setCards(() => cards.filter(el => el._id !== card._id));
       })
       .catch(err => console.log(err))
       .finally(() => setLoading(false));

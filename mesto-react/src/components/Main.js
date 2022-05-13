@@ -30,7 +30,7 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onC
             cards.map(card => {
               return (
                 <Card 
-                key={card.cardId} card={card} 
+                key={card._id} card={card} 
                 onCardClick={onCardClick} 
                 onCardLike={onCardLike}
                 onConfirmDelete={onConfirmDelete}/>
