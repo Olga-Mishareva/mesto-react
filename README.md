@@ -26,5 +26,5 @@
 
 
 
-[Ссылка на проект](https://olga-mishareva.github.io/mesto/)
+[Ссылка на проект](https://olga-mishareva.github.io/mesto-react/)
 
