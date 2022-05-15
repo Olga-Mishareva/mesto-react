@@ -12,9 +12,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, is
   function handleSubmit(e) {
     e.preventDefault();
 
-    onUpdateAvatar({
-      avatar
-    });
+    onUpdateAvatar({ avatar });
     setAvatar('');
   }
 
@@ -27,7 +25,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, loading, isValid, is
         submitBtn={loading ? 'Сохраниение...' : 'Сохранить'}
         onSubmit={handleSubmit} onSetForms={onSetForms}> 
 
-        <input className="popup__input popup__input_type_avatar" value={avatar || ''} type="url" required 
+        <input className="popup__input popup__input_type_avatar" value={avatar} type="url" required 
         name="avatar" placeholder="Ссылка на картинку" onChange={handleAvatar}/>
         <Validation errorMessage={errorMessage} name="avatar"/>
       </PopupWithForm>
